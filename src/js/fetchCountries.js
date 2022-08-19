@@ -4,5 +4,5 @@ export default function fetchCountries(name) {
     const END_POINT = 'name';
     const FILTER = '?fields=name,capital,population,flags,languages';
 
-    return fetch(`${BASE_URL}${END_POINT}/${name}${FILTER}`).then(response => response.json()).then(data => console.log(data))
+    return fetch(`${BASE_URL}${END_POINT}/${name}${FILTER}`).then(response => response.json());
 };
