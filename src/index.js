@@ -15,7 +15,6 @@ const onSearchCountry = event => {
     listEl.innerHTML = '';
     thumbInfo.innerHTML = '';
   }
-  console.log(name);
   fetchCountries(name)
     .then(data => {
       if (data.status === 404) {
@@ -39,14 +38,13 @@ function onShowInfo(countries) {
     createMarkupList(countries);
     thumbInfo.innerHTML = '';
   } else if (countries.length === 1) {
+    thumbInfo.innerHTML = '';
     createMarkupList(countries);
     listEl.innerHTML = '';
   }
 }
 
 function createMarkupList(countries) {
-  console.log(countries);
-
   const markupList = countries
     .map(
       country => `<li class = country-list_item>
@@ -56,7 +54,7 @@ function createMarkupList(countries) {
     )
     .join('');
 
-  listEl.insertAdjacentHTML('beforeend', markupList);
+  listEl.insertAdjacentHTML('afterbegin', markupList);
 
   const markupInfo = countries.map(
     country => ` <div class="inner"><img src="${
@@ -73,5 +71,5 @@ function createMarkupList(countries) {
             country.languages
           )}</p>`
   );
-  thumbInfo.insertAdjacentHTML('beforeend', markupInfo);
+  thumbInfo.insertAdjacentHTML('afterbegin', markupInfo);
 }
