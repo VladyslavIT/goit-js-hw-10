@@ -13,7 +13,8 @@ const onSearchCountry = event => {
   const name = event.target.value.trim();
   if (name === '') {
     listEl.innerHTML = '';
-    thumbInfo.innerHTML = '';
+      thumbInfo.innerHTML = '';
+      return;
   }
   fetchCountries(name)
     .then(data => {
