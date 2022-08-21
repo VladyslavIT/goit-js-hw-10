@@ -9,52 +9,69 @@ const thumbInfo = document.querySelector('.country-info');
 
 const DEBOUNCE_DELAY = 300;
 
-const onSearchCountry = (event) => {
-    const name = event.target.value.trim();
-    console.log(name);
-    fetchCountries(name).then(data => onShowInfo(data));
-}
+const onSearchCountry = event => {
+  const name = event.target.value.trim();
+  if (name === '') {
+    listEl.innerHTML = '';
+    thumbInfo.innerHTML = '';
+  }
+  console.log(name);
+  fetchCountries(name)
+    .then(data => {
+      if (data.status === 404) {
+        Notiflix.Notify.failure('Oops, there is no country with that name');
+      }
+      onShowInfo(data);
+    })
+    .catch(error => {
+      Notiflix.Notify.failure(error);
+    });
+};
 
 inputEl.addEventListener('input', debounce(onSearchCountry, DEBOUNCE_DELAY));
 
 function onShowInfo(countries) {
-    clearInput();
-
-    if (countries.length > 10) {
-        Notiflix.Notify.info('Too many matches found. Please enter a more specific name.')
-    } else if (countries.length > 1) {
-        createMarkupList(countries);
-    } else if (countries.length === 1) {
-        createMarkupInfo(countries[0]);
-    } else {
-        Notiflix.Notify.failure('Oops, there is no country with that name')
-    }
-};
+  if (countries.length > 10) {
+    Notiflix.Notify.info(
+      'Too many matches found. Please enter a more specific name.'
+    );
+  } else if (countries.length > 1) {
+    createMarkupList(countries);
+    thumbInfo.innerHTML = '';
+  } else if (countries.length === 1) {
+    createMarkupList(countries);
+    listEl.innerHTML = '';
+  }
+}
 
 function createMarkupList(countries) {
-    console.log(countries);
+  console.log(countries);
 
-    const markupList = countries.map(country => `<li class = country-list_item>
+  const markupList = countries
+    .map(
+      country => `<li class = country-list_item>
           <img class = country-list_photo src="${country.flags.svg}" width = 60 alt="${country.name.official}">
           <h2 class = country-list_text >${country.name.official}</h2>
-      </li>`).join(''); 
-    listEl.insertAdjacentHTML('beforeend', markupList); 
+      </li>`
+    )
+    .join('');
 
-    const markupInfo = countries.map(country => createMarkupInfo(country));
-    // console.log(markupInfo[0]);
-    thumbInfo.insertAdjacentHTML('beforeend', markupInfo[0]);
-};
+  listEl.insertAdjacentHTML('beforeend', markupList);
 
-function createMarkupInfo({name, capital, population, languages: {languages}, flags}) {
-    return ` <div class="inner"><img src="${flags.svg}"width = 60 alt="${name.official}">
-          <h2 class = country-info_title>${name.official}</h2></div>
-          <p class = country-info_text><span class = country-info_label>Capital:</span>${capital}</p>
-          <p class = country-info_text><span class = country-info_label>Population:</span>${population}</p>
-          <p class = country-info_text><span class = country-info_label>Languages:</span>${languages}</p>`
-};
-
-function clearInput() {
-    listEl.innerHTML = '';
-    thumbInfo.innerHTML = '';
-};
-
+  const markupInfo = countries.map(
+    country => ` <div class="inner"><img src="${
+      country.flags.svg
+    }"width = 60 alt="${country.name.official}">
+          <h2 class = country-info_title>${country.name.official}</h2></div>
+          <p class = country-info_text><span class = country-info_label>Capital:</span>${
+            country.capital
+          }</p>
+          <p class = country-info_text><span class = country-info_label>Population:</span>${
+            country.population
+          }</p>
+          <p class = country-info_text><span class = country-info_label>Languages:</span>${Object.values(
+            country.languages
+          )}</p>`
+  );
+  thumbInfo.insertAdjacentHTML('beforeend', markupInfo);
+}
