@@ -1,19 +1,19 @@
- function createMarkupList(countries) {
-    const markupList = countries
-        .map(
-            country => `<li class = country-list_item>
+function createMarkupList(countries) {
+  const markupList = countries
+    .map(
+      country => `<li class = country-list_item>
           <img class = country-list_photo src="${country.flags.svg}" width = 60 alt="${country.name.official}">
           <h2 class = country-list_text >${country.name.official}</h2>
       </li>`
-        )
-        .join('');
+    )
+    .join('');
 
-    listEl.insertAdjacentHTML('afterbegin', markupList);
+  return markupList;
 }
 
- function createMarkupInfo(countries){
+function createMarkupInfo(countries) {
   const markupInfo = countries.map(
-      country => ` <div class="inner"><img src="${
+    country => ` <div class="inner"><img src="${
       country.flags.svg
     }"width = 60 alt="${country.name.official}">
           <h2 class = country-info_title>${country.name.official}</h2></div>
@@ -27,7 +27,7 @@
             country.languages
           )}</p>`
   );
-  thumbInfo.insertAdjacentHTML('afterbegin', markupInfo);
+  return markupInfo;
 }
 
 export { createMarkupList, createMarkupInfo };
