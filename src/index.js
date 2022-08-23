@@ -1,7 +1,9 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
-import fetchCountries from './fetchCountries.js';
+import fetchCountries from './api/fetchCountries';
+import { createMarkupList, createMarkupInfo } from './markup';
+
 
 const inputEl = document.querySelector('#search-box');
 const listEl = document.querySelector('.country-list');
@@ -17,14 +19,11 @@ const onSearchCountry = event => {
       return;
   }
   fetchCountries(name)
-    .then(data => {
-      if (data.status === 404) {
+    .then(data => onShowInfo(data))
+    .catch(error => {
+      if (error.status === 404) {
         Notiflix.Notify.failure('Oops, there is no country with that name');
       }
-      onShowInfo(data);
-    })
-    .catch(error => {
-      Notiflix.Notify.failure(error);
     });
 };
 
@@ -40,37 +39,37 @@ function onShowInfo(countries) {
     thumbInfo.innerHTML = '';
   } else if (countries.length === 1) {
     thumbInfo.innerHTML = '';
-    createMarkupList(countries);
+    createMarkupInfo(countries);
     listEl.innerHTML = '';
   }
 }
 
-function createMarkupList(countries) {
-  const markupList = countries
-    .map(
-      country => `<li class = country-list_item>
-          <img class = country-list_photo src="${country.flags.svg}" width = 60 alt="${country.name.official}">
-          <h2 class = country-list_text >${country.name.official}</h2>
-      </li>`
-    )
-    .join('');
+// function createMarkupList(countries) {
+//   const markupList = countries
+//     .map(
+//       country => `<li class = country-list_item>
+//           <img class = country-list_photo src="${country.flags.svg}" width = 60 alt="${country.name.official}">
+//           <h2 class = country-list_text >${country.name.official}</h2>
+//       </li>`
+//     )
+//     .join('');
 
-  listEl.insertAdjacentHTML('afterbegin', markupList);
+//   listEl.insertAdjacentHTML('afterbegin', markupList);
 
-  const markupInfo = countries.map(
-    country => ` <div class="inner"><img src="${
-      country.flags.svg
-    }"width = 60 alt="${country.name.official}">
-          <h2 class = country-info_title>${country.name.official}</h2></div>
-          <p class = country-info_text><span class = country-info_label>Capital:</span>${
-            country.capital
-          }</p>
-          <p class = country-info_text><span class = country-info_label>Population:</span>${
-            country.population
-          }</p>
-          <p class = country-info_text><span class = country-info_label>Languages:</span>${Object.values(
-            country.languages
-          )}</p>`
-  );
-  thumbInfo.insertAdjacentHTML('afterbegin', markupInfo);
-}
+//   const markupInfo = countries.map(
+//     country => ` <div class="inner"><img src="${
+//       country.flags.svg
+//     }"width = 60 alt="${country.name.official}">
+//           <h2 class = country-info_title>${country.name.official}</h2></div>
+//           <p class = country-info_text><span class = country-info_label>Capital:</span>${
+//             country.capital
+//           }</p>
+//           <p class = country-info_text><span class = country-info_label>Population:</span>${
+//             country.population
+//           }</p>
+//           <p class = country-info_text><span class = country-info_label>Languages:</span>${Object.values(
+//             country.languages
+//           )}</p>`
+//   );
+//   thumbInfo.insertAdjacentHTML('afterbegin', markupInfo);
+// }
